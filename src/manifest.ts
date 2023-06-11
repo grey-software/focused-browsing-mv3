@@ -3,8 +3,11 @@ import type { Manifest } from 'webextension-polyfill'
 import type PkgType from '../package.json'
 import { isDev, isFirefox, port, r } from '../scripts/utils'
 
+const devPolicy = `script-src \'self\' http://localhost:${port}; object-src \'self\'`
+const prodPolicy = 'script-src \'self\'; object-src \'self\''
+
 export async function getManifest() {
-  const pkg = await fs.readJSON(r('package.json')) as typeof PkgType
+  const pkg = (await fs.readJSON(r('package.json'))) as typeof PkgType
 
   // update this file to update this manifest.json
   // can also be conditional based on your need
@@ -29,25 +32,16 @@ export async function getManifest() {
       : {
           service_worker: './dist/background/index.mjs',
         },
-    icons: {
-      16: './assets/icon-512.png',
-      48: './assets/icon-512.png',
-      128: './assets/icon-512.png',
-    },
-    permissions: [
-      'tabs',
-      'storage',
-      'activeTab',
-    ],
-    host_permissions: ['*://*/*'],
+    permissions: ['tabs', 'storage', 'activeTab'],
+    host_permissions: ['https://api.github.com/graphql'],
     content_scripts: [
+      // {
+      //   matches: ['*://*.twitter.com/*'],
+      //   js: ['dist/contentScripts/index.global.js'],
+      // },
       {
-        matches: [
-          '<all_urls>',
-        ],
-        js: [
-          'dist/contentScripts/index.global.js',
-        ],
+        matches: ['https://access.grey.software/result*'],
+        js: ['dist/contentScripts/index.global.js'],
       },
     ],
     web_accessible_resources: [
@@ -57,21 +51,8 @@ export async function getManifest() {
       },
     ],
     content_security_policy: {
-      extension_pages: isDev
-        // this is required on dev for Vite script to load
-        ? `script-src \'self\' http://localhost:${port}; object-src \'self\'`
-        : 'script-src \'self\'; object-src \'self\'',
+      extension_pages: isDev ? devPolicy : prodPolicy,
     },
   }
-
-  // FIXME: not work in MV3
-  if (isDev && false) {
-    // for content script, as browsers will cache them for each reload,
-    // we use a background script to always inject the latest version
-    // see src/background/contentScriptHMR.ts
-    delete manifest.content_scripts
-    manifest.permissions?.push('webNavigation')
-  }
-
   return manifest
 }
