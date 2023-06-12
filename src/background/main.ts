@@ -1,5 +1,6 @@
 import { onMessage } from 'webext-bridge/background'
-import { sponsorStorage } from '~/logic'
+import { AppState } from '~/focus/types'
+import { appStateStorage } from '~/logic/app-state'
 
 const verifySponsorship = async (githubData: any) => {
   const isSponsoringResult = await fetch('https://api.github.com/graphql', {
@@ -27,6 +28,10 @@ const verifySponsorship = async (githubData: any) => {
 }
 
 onMessage('verify-sponsor', async (githubData) => {
-  const isSponsoring = await verifySponsorship(githubData.data)
-  sponsorStorage.value = isSponsoring
+  console.log(githubData)
+  const isSponsor = await verifySponsorship(githubData.data)
+  const appState: AppState = JSON.parse(appStateStorage.value);
+  appState.isSponsor = isSponsor
+  appStateStorage.value = JSON.stringify(appState)
+  console.log(appStateStorage.value)
 })

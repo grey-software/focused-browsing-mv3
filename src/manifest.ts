@@ -40,7 +40,7 @@ export async function getManifest() {
       //   js: ['dist/contentScripts/index.global.js'],
       // },
       {
-        matches: ['https://access.grey.software/result*'],
+        matches: ['*://*.twitter.com/*', 'https://access.grey.software/result*'],
         js: ['dist/contentScripts/index.global.js'],
       },
     ],

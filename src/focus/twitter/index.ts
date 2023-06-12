@@ -1,11 +1,18 @@
+import WebsiteController from '../website-controller'
 import TwitterUtils from './twitter-utils'
 
-export default class TwitterController {
-  feedIntervalId = 0
-
-  static init() {
-    focus()
+export default class TwitterController extends WebsiteController {
+  
+  unfocus(): void {
+    throw new Error('Method not implemented.')
   }
+  premiumFocus(): void {
+    throw new Error('Method not implemented.')
+  }
+  clearIntervals(): void {
+    throw new Error('Method not implemented.')
+  }
+  feedIntervalId = 0
 
   focus() {
     if (this.feedIntervalId)

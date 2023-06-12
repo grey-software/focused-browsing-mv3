@@ -14,12 +14,16 @@ const storageLocal: StorageLikeAsync = {
     return storage.local.remove(key)
   },
 
-  setItem(key: string, value: string) {
-    return storage.local.set({ [key]: value })
+  async setItem(key: string, value: string) {
+    console.log(`Setting ${key} to ${value}`)
+    return await storage.local.set({ [key]: value })
   },
 
   async getItem(key: string) {
-    return (await storage.local.get(key))[key]
+    const item = (await storage.local.get(key))[key]
+    console.log(`Getting item for key: ${key}`);
+    console.log(`\n ${item}`);
+    return item
   },
 }
 
