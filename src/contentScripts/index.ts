@@ -4,7 +4,7 @@ import WebsiteController from '~/focus/website-controller';
 import { launchAccessScript } from './access';
 import { appStateStorage } from '~/logic/app-state';
 
-let currentWebsite: Website = Website.Unsupported;
+let currentWebsite: Website
 let websiteController: WebsiteController;
 
 async function initialize() {
@@ -33,8 +33,7 @@ function render() {
   }
 }
 
-// (async () => {
-//   await initialize();
-//   if (currentWebsite === Website.Access) return
-//   render()
-// });
+(async () => {
+  await initialize();
+  render()
+})();
